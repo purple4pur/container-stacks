@@ -2,8 +2,6 @@ bindPort = 7000
 kcpBindPort = 7000
 
 allowPorts = [
-  { single = 80 }, # pc.webdav
-  { single = 2080 }, # pc.sftpgo_webui
   { single = 6022 }, # homelab.ssh
   { single = 18080 }, # pc.qbt_webui
   { single = 18081 }, # homelab.qbt_webui
