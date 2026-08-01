@@ -37,6 +37,10 @@
       href: https://qbt504.quitw.org/
       description: Torrent Client
 - Cool Online Tools (Self-Hosted):
+  - Piano Practice:
+      icon: https://piano.quitw.org/favicon.svg
+      href: https://piano.quitw.org/
+      description: Practice staff reading online
   - IT-Tools:
       icon: it-tools
       href: https://tools.quitw.org/

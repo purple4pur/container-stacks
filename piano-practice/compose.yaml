@@ -1,0 +1,25 @@
+services:
+  piano-practice:
+    image: ghcr.io/purple4pur/piano-practice:latest
+    environment:
+      - PORT=8080
+    container_name: "piano_practice"
+    restart: "unless-stopped"
+    labels:
+      traefik.enable: true
+      traefik.http.services.piano_practice.loadbalancer.server.port: "8080"
+      traefik.http.routers.piano_practice.rule: "Host(`piano.${BASEURL:?error}`)"
+      traefik.http.routers.piano_practice.entrypoints: "websecure"
+      traefik.http.routers.piano_practice.tls.certresolver: "cloudflare"
+      traefik.http.routers.piano_practice.service: "piano_practice"
+      traefik.http.routers.piano_practice.middlewares: "compressor"
+    networks:
+      frontend:
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT:?error}
+
+networks:
+  frontend:
+    external: true
