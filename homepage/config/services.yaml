@@ -3,18 +3,10 @@
       icon: https://static.quitw.org/img/miku.jpg
       href: https://blog.quitw.org/
       description: Dev & Life & Live
-  - Filebrowser (Shanghai):
-      icon: filebrowser-quantum
-      href: https://files.quitw.org/
-      description: Web File Browser
   - Filebrowser (Homelab):
       icon: filebrowser-quantum
       href: https://files504.quitw.org/
       description: Web File Browser
-  #- cAdvisor:
-  #    icon: cadvisor
-  #    href: https://cadvisor.quitw.org/
-  #    description: Resource Monitor
   - Whoami:
       icon: whoogle
       href: https://whoami.quitw.org/
@@ -28,10 +20,6 @@
       icon: https://pbh.quitw.org/favicon.ico
       href: https://pbh.quitw.org/
       description: Auto Ban Peer
-  - qBittorrent WebUI (Shanghai):
-      icon: qbittorrent
-      href: https://qbt.quitw.org/
-      description: Torrent Client
   - qBittorrent WebUI (Homelab):
       icon: qbittorrent
       href: https://qbt504.quitw.org/
