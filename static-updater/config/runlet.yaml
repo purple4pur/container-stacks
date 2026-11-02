@@ -6,6 +6,8 @@ commands:
       exec 9>/tmp/proxy-sync.lock
       flock 9
 
+      : "${STATIC_PROXY_DIR:?missing STATIC_PROXY_DIR}"
+
       if [ ! -d /data/repo/.git ]; then
         git clone --depth 1 https://github.com/purple4pur/proxy-config-updater.git /data/repo
       fi
@@ -16,10 +18,10 @@ commands:
 
       for f in /data/repo/out/*; do
         name="$(basename "$f")"
-        tmp="/out/<proxy-dir>/.${name}.tmp.$$"
+        tmp="/out/${STATIC_PROXY_DIR}/.${name}.tmp.$$"
         cp "$f" "$tmp"
         chmod 644 "$tmp"
-        mv -f "$tmp" "/out/<proxy-dir>/${name}"
+        mv -f "$tmp" "/out/${STATIC_PROXY_DIR}/${name}"
       done
 
       tmp="/out/dashboard/.index.html.tmp.$$"
@@ -32,7 +34,7 @@ commands:
         "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
         -H 'Content-Type: application/json' \
         -H "Authorization: Bearer ${CF_PURGE_TOKEN}" \
-        -d '{"prefixes":["static.quitw.org/dashboard","static.quitw.org/<proxy-dir>/"]}')"
+        -d "{\"prefixes\":[\"static.quitw.org/dashboard\",\"static.quitw.org/${STATIC_PROXY_DIR}/\"]}")"
       printf '%s\n' "$purge"
       printf '%s' "$purge" | grep -Eq '"success"[[:space:]]*:[[:space:]]*true'
 

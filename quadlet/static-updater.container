@@ -15,8 +15,7 @@ Volume=%h/container_stacks/static-updater/config/runlet.yaml:/etc/runlet/config.
 Volume=%h/container_stacks/static-updater/config/.gitconfig:/root/.gitconfig:ro
 Volume=%h/container_stacks/static-updater/config/git-credential.sh:/config/git-credential.sh:ro
 Volume=%h/.local/share/container_stacks/static-updater/data:/data
-Volume=%h/.local/share/container_stacks/static/html/<proxy-dir>:/out/<proxy-dir>
-Volume=%h/.local/share/container_stacks/static/html/dashboard:/out/dashboard
+Volume=%h/.local/share/container_stacks/static/html:/out
 Volume=%h/.config/container_stacks/secrets/cloudflare.env:/run/secrets/cloudflare.env:ro
 PodmanArgs=--memory=64m
 HealthCmd=curl -fsS http://localhost:8080/health

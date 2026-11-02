@@ -18,7 +18,7 @@ Copy the example, replace every placeholder, and set mode 600.
 | `traefik.env` | `traefik/.env.example` | Cloudflare DNS-01 token |
 | `cloudflare.env` | `scripts/cloudflare.env.example` | Cache purge token and zone ID |
 | `blog-runlet.env` | `blog/runlet.env.example` | Blog updater bearer token |
-| `static-updater-runlet.env` | `static-updater/runlet.env.example` | Static updater bearer token |
+| `static-updater-runlet.env` | `static-updater/runlet.env.example` | Static updater bearer token and proxy directory name |
 | `static-updater-git.env` | `static-updater/git.env.example` | Read-only GitHub PAT |
 
 1. Run `cp <example> ~/.config/container_stacks/secrets/<file>`.
@@ -32,6 +32,9 @@ purge token needs cache purge permission only. The GitHub token is a
 fine-grained PAT with contents read-only on the proxy config repository.
 
 Generate the two Runlet bearer tokens with `openssl rand -hex 32`.
+
+`STATIC_PROXY_DIR` names the proxy snapshot directory under the static site.
+Treat the value as a secret. Do not add it to a tracked file.
 
 ## Check the result
 

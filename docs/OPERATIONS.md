@@ -53,10 +53,11 @@ in the `Authorization` header.
 
 Runlet pulls `~/.local/share/container_stacks/static-updater/data/repo` and
 resets it to `origin/master`. It publishes `out/*` to
-`~/.local/share/container_stacks/static/html/<proxy-dir>` and `out/index.html` to
-`~/.local/share/container_stacks/static/html/dashboard`. It then purges both
-Cloudflare prefixes. Traefik exposes only that path and limits it to 3 requests
-per minute.
+`~/.local/share/container_stacks/static/html/<proxy-dir>` and `out/index.html`
+to `~/.local/share/container_stacks/static/html/dashboard`. `<proxy-dir>` is
+the `STATIC_PROXY_DIR` value from `static-updater-runlet.env`. Runlet then
+purges both Cloudflare prefixes. Traefik exposes only that path and limits it
+to 3 requests per minute.
 
 ## Trigger the blog updater
 
