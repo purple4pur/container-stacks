@@ -1,122 +1,56 @@
 # container-stacks
 
-Rootless Podman + Quadlet configuration for my self-hosted services.
+Rootless Podman and Quadlet configuration for a self-hosted service stack.
 
-This is v2 of the repository formerly named `docker_compose`. The old Docker
-Compose tree is preserved on the [`v1-docker`](https://github.com/purple4pur/container-stacks/tree/v1-docker)
-branch and is no longer maintained.
+## What this repository is
 
-## Layout
+This repository holds declarative configuration only. Podman reads one Quadlet
+unit per container from `quadlet/`. Traefik reads routes from
+`traefik/config/dynamic.yaml`. The dashboard and the other services read their
+configuration from the tracked `config/` directories.
 
-```text
-quadlet/        one systemd unit per container; source of truth
-traefik/        static config and dynamic routes
-homepage/       dashboard config
-blog/           Runlet config and blog pull command
-static-updater/ Runlet config and proxy sync command
-sshwifty/       web SSH config
-scripts/        install, verify, and tunnel helpers
-systemd/        image update timer
-docs/           architecture notes
-```
+The repository never holds live data or credentials. Runtime state lives under
+`~/.local/share/container_stacks/`. Secrets live under
+`~/.config/container_stacks/secrets/` with mode 600.
 
-Runtime state and secrets live outside this repository:
+## Branch model
 
-```text
-~/.config/container_stacks/secrets/   # env files, mode 600
-~/.local/share/container_stacks/      # volumes, logs, databases
-```
+`main` holds the current Podman and Quadlet stack. `v1-docker` holds the old
+Docker Compose stack and receives no updates. Use the
+[`v1-docker` branch](https://github.com/purple4pur/container-stacks/tree/v1-docker)
+when you need the old files.
 
-The units reference those paths directly, so the repository can be cloned
-anywhere and never contains live data or credentials.
+## Repository layout
 
-## Daily commands
+| Path | Contents |
+|---|---|
+| `quadlet/` | One systemd unit per container |
+| `traefik/` | Static configuration and dynamic routes |
+| `homepage/` | Dashboard configuration |
+| `blog/` | Runlet configuration for the blog pull |
+| `static-updater/` | Runlet configuration for the proxy sync |
+| `sshwifty/` | Web SSH configuration |
+| `scripts/` | Install, verify, tunnel, and hygiene helpers |
+| `systemd/` | Image update timer |
+| `docs/` | Architecture, operations, and secret documents |
 
-Quadlet units are symlinked into the user unit directory by `scripts/install.sh`.
+## Repository rules
 
-```sh
-scripts/install.sh                 # link units and reload systemd
-systemctl --user start traefik     # start one unit
-systemctl --user status traefik    # check it
-podman ps                          # running containers
-podman logs -f homepage            # follow logs
-journalctl --user -u homepage -f   # service logs
-```
+The `main` branch follows three rules:
 
-Edit a unit in `quadlet/`, then run:
+1. No v1 files. The old Compose tree stays on `v1-docker`.
+2. No runtime data or generated output. Volumes, logs, databases, and published
+   files stay outside the worktree.
+3. No credentials. Only `.env.example` files may be tracked.
 
-```sh
-systemctl --user daemon-reload
-systemctl --user restart <unit>
-```
+`scripts/check-hygiene.sh` checks these rules. CI runs the check on every push
+and pull request. Gitleaks checks the history for secrets.
 
-Units start at boot because user lingering is enabled.
+## Documentation
 
-## Image updates
-
-`image-update.timer` runs `podman-auto-update.service` daily at 05:00
-Asia/Shanghai. Every unit is marked `AutoUpdate=registry`, so it pulls its
-image and restarts when the remote tag digest changes. Pinned tags track digest
-changes on that tag only; a new version still needs a manual tag bump.
-
-```sh
-systemctl --user list-timers image-update.timer
-podman auto-update --dry-run       # show what the next run would update
-```
-
-## Networking
-
-All public containers join the `frontend` network. Traefik publishes 443 and
-routes by hostname using the file provider in `traefik/config/dynamic.yaml`.
-No Docker or Podman socket is mounted into Traefik.
-
-## Secrets
-
-Secrets are environment files under `~/.config/container_stacks/secrets/`
-(mode 600). They are created from the tracked examples and never committed.
-
-| File | Purpose | Example |
-|---|---|---|
-| `traefik.env` | Cloudflare DNS-01 token | `traefik/.env.example` |
-| `cloudflare.env` | Cache-purge token and zone ID | `scripts/cloudflare.env.example` |
-| `blog-runlet.env` | Blog updater bearer token | `blog/runlet.env.example` |
-| `static-updater-runlet.env` | Static updater bearer token | `static-updater/runlet.env.example` |
-| `static-updater-git.env` | Read-only GitHub PAT | `static-updater/git.env.example` |
-
-```sh
-install -d -m 700 ~/.config/container_stacks/secrets
-install -m 600 /dev/null ~/.config/container_stacks/secrets/traefik.env
-```
-
-The DNS-01 token needs DNS edit permission for the zone. The GitHub token is a
-fine-grained PAT with contents read-only on the proxy config repository.
-
-## Static updater
-
-`static-updater.quitw.org` exposes one runlet command: `POST /run/proxy-sync`.
-The `proxy-config-updater` workflow calls it after it pushes a new `out/`
-snapshot. The command pulls `~/.local/share/container_stacks/static-updater/data/repo`,
-resets it to `origin/master`, atomically publishes `out/*` to
-`~/.local/share/container_stacks/static/html/<proxy-dir>` and `out/index.html` to
-`~/.local/share/container_stacks/static/html/dashboard`, then purges both
-Cloudflare prefixes. Traefik exposes only that path and limits it to 3 requests
-per minute.
-
-## Blog updater
-
-`blog-updater.quitw.org` exposes one runlet command: `POST /run/blog-pull`.
-It fetches `~/.local/share/container_stacks/blog/data/myblog` and resets it to
-`origin/main`. Traefik exposes only that path and limits it to 3 requests per
-minute.
-
-## Repository hygiene
-
-`scripts/check-hygiene.sh` enforces the three repository rules:
-
-1. No v1 files: the old Compose tree lives only on `v1-docker`.
-2. No runtime data or generated output: volumes, logs, databases, and published
-   files stay under `~/.local/share/container_stacks/`.
-3. No credentials: only `.env.example` files may be tracked.
-
-CI runs that check on every push and pull request, plus a gitleaks history
-scan. The pre-commit config runs both hooks locally.
+- [Architecture](docs/ARCHITECTURE.md) explains the service model and the state
+  and secret boundaries.
+- [Operations](docs/OPERATIONS.md) gives the commands to install, run, and
+  maintain the stack.
+- [Secrets](docs/SECRETS.md) gives the steps to create the local environment
+  files.

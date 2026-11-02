@@ -1,51 +1,77 @@
 # Architecture
 
-## Services
+## Why this shape
+
+The stack runs as a rootless Podman service for one user. Each container is a
+systemd user unit, so boot startup, restart, and logs use systemd. Podman needs
+no root daemon and no container runtime socket.
+
+The repository tracks only declarative configuration. A clone of the repository
+is safe to publish because live data and credentials live outside it. This
+separation is the main design rule, and CI enforces it.
+
+Each updater runs after a push to its source repository. The proxy config
+repository and the blog repository call a Runlet endpoint. The stack does not
+poll the remote repositories.
+
+## Service model
+
+Each container has one Quadlet file in `quadlet/`. systemd starts the units at
+boot through user lingering. All public containers join the `frontend` bridge
+network.
 
 | Unit | Role | Persistent state |
 |---|---|---|
-| `traefik` | TLS termination and host routing | certificates |
-| `homepage` | Dashboard | logs |
-| `static` | Static site nginx | published files |
-| `blog-web` | Blog content nginx | blog checkout |
-| `blog-updater` | Runlet blog pull trigger | blog checkout |
-| `static-updater` | Runlet proxy config sync trigger | proxy checkout, published files |
-| `it-tools`, `cyberchef`, `learnx`, `piano-practice`, `sshwifty`, `qui`, `peerbanhelper`, `whoami` | Leaf services | per service |
-| `frp-tunnel` | SSH tunnel to remote downloader ports | none |
+| `traefik` | TLS termination and host routing | Certificates |
+| `homepage` | Dashboard | Logs |
+| `static` | Static file server | Published files |
+| `blog-web` | Blog content server | Blog checkout |
+| `blog-updater` | Blog pull trigger | Blog checkout |
+| `static-updater` | Proxy config sync trigger | Proxy checkout and published files |
+| `it-tools` | Developer tools | None |
+| `cyberchef` | Data transformation | None |
+| `learnx` | Code documentation | None |
+| `piano-practice` | Staff reading practice | None |
+| `sshwifty` | Web SSH client | None |
+| `qui` | Torrent web UI | Configuration, logs, and database |
+| `peerbanhelper` | Peer ban manager | Service data |
+| `whoami` | Request echo test | None |
+| `frp-tunnel` | SSH tunnel to remote downloader ports | None |
 
-## Networks and routing
+## Network and routing
 
-All public containers join the `frontend` bridge network. Traefik publishes
-port 443 and reads routes from `traefik/config/dynamic.yaml` through the file
-provider. No container runtime socket is mounted into Traefik.
+Traefik publishes port 443. It reads routes from
+`traefik/config/dynamic.yaml` through the file provider. No container runtime
+socket is mounted into Traefik.
 
-TLS certificates use the Cloudflare DNS-01 challenge. ACME state is kept in
-the runtime state directory, never in the repository.
+TLS certificates use the Cloudflare DNS-01 challenge. Traefik stores ACME state
+in the runtime state directory, not in the repository.
 
-## Persistent state
+## State and secret boundaries
 
-Declarative configuration is tracked in the repository. Everything mutable is
-mounted from outside the worktree:
+The repository tracks declarative configuration. It does not track mutable
+state. Units mount all mutable data from outside the worktree:
 
 ```text
 ~/.local/share/container_stacks/<service>/
 ```
 
-That includes databases, logs, cloned repositories, published static files,
-and ACME state. `scripts/check-hygiene.sh` rejects any tracked path that looks
-like one of those directories.
-
-## Secrets
+Databases, logs, cloned repositories, published files, and ACME state live
+there. `scripts/check-hygiene.sh` rejects tracked paths that look like state
+directories.
 
 Bearer tokens, API tokens, and the GitHub PAT live in
-`~/.config/container_stacks/secrets/` with mode 600. Units reference them
-through `EnvironmentFile=` or a bind-mounted `/run/secrets/` file. The
-repository only contains `.env.example` templates with placeholders.
+`~/.config/container_stacks/secrets/` with mode 600. Units read them through
+`EnvironmentFile=` or through a bind-mounted `/run/secrets/` file. The
+repository tracks only `.env.example` templates with placeholders.
 
 ## Update flow
 
-- Container images update through `podman-auto-update` on a daily timer.
-- The static site is push-triggered: the proxy config workflow calls a Runlet
-  endpoint, which pulls the config repository and publishes a new snapshot.
-- The blog mirror is push-triggered the same way through its own Runlet
-  endpoint.
+`podman-auto-update` runs on a daily timer and updates container images. A unit
+with `AutoUpdate=registry` restarts when the digest of its tag changes.
+
+A proxy config workflow triggers the static site sync. It calls a Runlet
+endpoint. Runlet pulls the config repository and publishes a new snapshot.
+
+A blog workflow calls its Runlet endpoint in the same way. Runlet resets the
+local blog checkout to `origin/main`.
