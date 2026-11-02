@@ -1,0 +1,17 @@
+[Unit]
+Description=LearnX
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/purple4pur/learnx:slim
+AutoUpdate=registry
+ContainerName=learnx
+Network=frontend.network
+PodmanArgs=--memory=20m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

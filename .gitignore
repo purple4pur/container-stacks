@@ -1,0 +1,25 @@
+# Secrets: only examples may be tracked
+*.env
+!*.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*credentials*
+acme*.json
+
+# Runtime state and generated output (normally kept outside the worktree)
+**/data/
+**/logs/
+**/html/
+**/letsencrypt/
+**/*.db
+**/*.db-*
+**/*.log
+**/*.gz
+**/*.zip
+backups/
+runtime/
+
+# Local tooling
+.qwen/

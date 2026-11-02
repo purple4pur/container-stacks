@@ -1,0 +1,17 @@
+listen: ":8080"
+
+commands:
+  blog-pull:
+    cmd: |
+      exec 9>/tmp/blog-pull.lock
+      flock 9
+      git -C /data/myblog fetch --prune origin
+      git -C /data/myblog reset --hard origin/main
+      test "$(git -C /data/myblog rev-parse HEAD)" = "$(git -C /data/myblog rev-parse origin/main)"
+    timeout: 30s
+
+  blog-status:
+    cmd: |
+      git -C /data/myblog rev-parse --short HEAD
+      git -C /data/myblog log -1 --pretty='%ci %s'
+    timeout: 10s

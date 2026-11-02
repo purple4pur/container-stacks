@@ -1,0 +1,48 @@
+- Blog & More:
+  - Blog:
+      icon: https://static.quitw.org/img/miku.jpg
+      href: https://blog.quitw.org/
+      description: Dev & Life & Live
+  - Filebrowser (Homelab):
+      icon: filebrowser-quantum
+      href: https://files504.quitw.org/
+      description: Web File Browser
+  - Whoami:
+      icon: whoogle
+      href: https://whoami.quitw.org/
+      description: Who am I?
+- Torrent Management:
+  - qui:
+      icon: qui
+      href: https://qui.quitw.org/
+      description: All-in-One qBittorrent Web UI
+  - PeerBanHelper:
+      icon: https://pbh.quitw.org/favicon.ico
+      href: https://pbh.quitw.org/
+      description: Auto Ban Peer
+  - qBittorrent WebUI (Homelab):
+      icon: qbittorrent
+      href: https://qbt504.quitw.org/
+      description: Torrent Client
+- Cool Online Tools (Self-Hosted):
+  - Piano Practice:
+      icon: https://piano.quitw.org/favicon.svg
+      href: https://piano.quitw.org/
+      description: Practice staff reading online
+  - IT-Tools:
+      icon: it-tools
+      href: https://tools.quitw.org/
+      description: Handy Tools For Developers
+  - CyberChef:
+      icon: cyberchef
+      href: https://cyberchef.quitw.org/
+      description: The Cyber Swiss Army Knife
+  - Sshwifty:
+      icon: sshwifty
+      href: https://shell.quitw.org/
+      description: Web SSH & Telnet Client
+      target: _blank
+  - Learn X in Y Minutes:
+      icon: code-cademy
+      href: https://learnx.quitw.org/
+      description: Code Documentation Written As Code

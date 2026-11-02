@@ -1,0 +1,19 @@
+[Unit]
+Description=Web SSH client (sshwifty)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/niruix/sshwifty:latest
+AutoUpdate=registry
+ContainerName=sshwifty
+Network=frontend.network
+Environment=SSHWIFTY_CONFIG=/etc/sshwifty/config.json
+Volume=%h/container_stacks/sshwifty/config/sshwifty.conf.json:/etc/sshwifty/config.json:ro
+PodmanArgs=--memory=50m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

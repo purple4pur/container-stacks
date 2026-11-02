@@ -1,0 +1,25 @@
+log:
+  level: "WARN"
+
+ping:
+  entryPoint: "traefik"
+
+providers:
+  file:
+    directory: "/etc/traefik/dynamic"
+    watch: true
+
+entryPoints:
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: "admin@example.com"
+      storage: "/letsencrypt/acme.json"
+      dnsChallenge:
+        provider: "cloudflare"
+        resolvers:
+          - "8.8.8.8:53"
+          - "1.1.1.1:53"

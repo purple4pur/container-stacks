@@ -1,0 +1,233 @@
+http:
+  middlewares:
+    compressor:
+      compress:
+        excludedContentTypes:
+          - "text/event-stream"
+
+    blog_updater_ratelimit:
+      rateLimit:
+        average: 3
+        period: 1m
+        burst: 3
+
+    static_updater_ratelimit:
+      rateLimit:
+        average: 3
+        period: 1m
+        burst: 3
+
+    www_to_root:
+      redirectRegex:
+        regex: "^https?://www\\.quitw\\.org(.*)"
+        replacement: "https://quitw.org${1}"
+        permanent: true
+
+  services:
+    whoami:
+      loadBalancer:
+        servers:
+          - url: "http://whoami:80"
+
+    homepage:
+      loadBalancer:
+        servers:
+          - url: "http://homepage:3000"
+
+    static:
+      loadBalancer:
+        servers:
+          - url: "http://static:80"
+
+    blog_web:
+      loadBalancer:
+        servers:
+          - url: "http://blog_web:80"
+
+    blog_updater:
+      loadBalancer:
+        servers:
+          - url: "http://blog_updater:8080"
+
+    static_updater:
+      loadBalancer:
+        servers:
+          - url: "http://static_updater:8080"
+
+    it_tools:
+      loadBalancer:
+        servers:
+          - url: "http://it-tools:8080"
+
+    cyberchef:
+      loadBalancer:
+        servers:
+          - url: "http://cyberchef:8080"
+
+    learnx:
+      loadBalancer:
+        servers:
+          - url: "http://learnx:80"
+
+    piano_practice:
+      loadBalancer:
+        servers:
+          - url: "http://piano_practice:8080"
+
+    sshwifty:
+      loadBalancer:
+        servers:
+          - url: "http://sshwifty:8182"
+
+    qui:
+      loadBalancer:
+        servers:
+          - url: "http://qui:7476"
+
+    peerbanhelper:
+      loadBalancer:
+        servers:
+          - url: "http://peerbanhelper:9898"
+
+  routers:
+    whoami:
+      rule: "Host(`whoami.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "whoami"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    homepage:
+      rule: "Host(`quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "homepage"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    www_to_root:
+      rule: "Host(`www.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "noop@internal"
+      middlewares:
+        - "www_to_root"
+      tls:
+        certResolver: "cloudflare"
+
+    static:
+      rule: "Host(`static.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "static"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    blog:
+      rule: "Host(`blog.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "blog_web"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    blog_updater:
+      rule: "Host(`blog-updater.quitw.org`) && Method(`POST`) && Path(`/run/blog-pull`)"
+      entryPoints:
+        - "websecure"
+      service: "blog_updater"
+      middlewares:
+        - "compressor"
+        - "blog_updater_ratelimit"
+      tls:
+        certResolver: "cloudflare"
+
+    static_updater:
+      rule: "Host(`static-updater.quitw.org`) && Method(`POST`) && Path(`/run/proxy-sync`)"
+      entryPoints:
+        - "websecure"
+      service: "static_updater"
+      middlewares:
+        - "compressor"
+        - "static_updater_ratelimit"
+      tls:
+        certResolver: "cloudflare"
+
+    it_tools:
+      rule: "Host(`tools.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "it_tools"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    cyberchef:
+      rule: "Host(`cyberchef.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "cyberchef"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    learnx:
+      rule: "Host(`learnx.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "learnx"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    piano_practice:
+      rule: "Host(`piano.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "piano_practice"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    sshwifty:
+      rule: "Host(`shell.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "sshwifty"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    qui:
+      rule: "Host(`qui.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "qui"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    peerbanhelper:
+      rule: "Host(`pbh.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "peerbanhelper"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"

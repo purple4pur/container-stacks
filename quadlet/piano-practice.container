@@ -1,0 +1,18 @@
+[Unit]
+Description=Piano practice
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/purple4pur/piano-practice:latest
+AutoUpdate=registry
+ContainerName=piano_practice
+Network=frontend.network
+Environment=PORT=8080
+PodmanArgs=--memory=20m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

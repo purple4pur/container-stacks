@@ -1,0 +1,20 @@
+[Unit]
+Description=qui torrent WebUI
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/autobrr/qui:latest
+AutoUpdate=registry
+ContainerName=qui
+Network=frontend.network
+Environment=QUI__LOG_PATH=/logs/qui.log
+Volume=%h/.local/share/container_stacks/qui/config:/config
+Volume=%h/.local/share/container_stacks/qui/logs:/logs
+PodmanArgs=--memory=200m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

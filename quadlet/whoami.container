@@ -1,0 +1,17 @@
+[Unit]
+Description=Traefik whoami test service
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/traefik/whoami:latest
+AutoUpdate=registry
+ContainerName=whoami
+Network=frontend.network
+PodmanArgs=--memory=10m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

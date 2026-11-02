@@ -1,0 +1,26 @@
+[Unit]
+Description=Blog update trigger (runlet)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/purple4pur/runlet:1.1.0
+AutoUpdate=registry
+ContainerName=blog_updater
+Network=frontend.network
+User=0
+EnvironmentFile=%h/.config/container_stacks/secrets/blog-runlet.env
+Volume=%h/container_stacks/blog/config/runlet.yaml:/etc/runlet/config.yaml:ro
+Volume=%h/container_stacks/blog/config/.gitconfig:/root/.gitconfig:ro
+Volume=%h/.local/share/container_stacks/blog/data:/data
+PodmanArgs=--memory=50m
+HealthCmd=curl -fsS http://localhost:8080/health
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

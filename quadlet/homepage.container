@@ -1,0 +1,23 @@
+[Unit]
+Description=Homepage dashboard
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/gethomepage/homepage:latest
+AutoUpdate=registry
+ContainerName=homepage
+Network=frontend.network
+Environment=HOMEPAGE_ALLOWED_HOSTS=quitw.org
+Environment=PUID=1003
+Environment=PGID=1003
+UserNS=keep-id:uid=1003,gid=1003
+Volume=%h/container_stacks/homepage/config:/app/config
+Volume=%h/.local/share/container_stacks/homepage/logs:/app/logs
+PodmanArgs=--memory=200m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

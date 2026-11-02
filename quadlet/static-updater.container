@@ -1,0 +1,31 @@
+[Unit]
+Description=Static site update trigger (runlet)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/purple4pur/runlet:1.1.0
+AutoUpdate=registry
+ContainerName=static_updater
+Network=frontend.network
+User=0
+EnvironmentFile=%h/.config/container_stacks/secrets/static-updater-runlet.env
+EnvironmentFile=%h/.config/container_stacks/secrets/static-updater-git.env
+Volume=%h/container_stacks/static-updater/config/runlet.yaml:/etc/runlet/config.yaml:ro
+Volume=%h/container_stacks/static-updater/config/.gitconfig:/root/.gitconfig:ro
+Volume=%h/container_stacks/static-updater/config/git-credential.sh:/config/git-credential.sh:ro
+Volume=%h/.local/share/container_stacks/static-updater/data:/data
+Volume=%h/.local/share/container_stacks/static/html/<proxy-dir>:/out/<proxy-dir>
+Volume=%h/.local/share/container_stacks/static/html/dashboard:/out/dashboard
+Volume=%h/.config/container_stacks/secrets/cloudflare.env:/run/secrets/cloudflare.env:ro
+PodmanArgs=--memory=64m
+HealthCmd=curl -fsS http://localhost:8080/health
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

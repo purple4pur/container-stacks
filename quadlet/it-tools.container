@@ -1,0 +1,17 @@
+[Unit]
+Description=IT tools
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/sharevb/it-tools:latest
+AutoUpdate=registry
+ContainerName=it-tools
+Network=frontend.network
+PodmanArgs=--memory=50m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

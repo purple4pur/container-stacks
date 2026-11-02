@@ -1,0 +1,18 @@
+[Unit]
+Description=Blog content nginx
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/library/nginx:alpine
+AutoUpdate=registry
+ContainerName=blog_web
+Network=frontend.network
+Volume=%h/.local/share/container_stacks/blog/data/myblog/docs:/usr/share/nginx/html:ro
+PodmanArgs=--memory=20m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,12 @@
+- logo:
+    icon: https://static.quitw.org/img/pfp.small.jpg
+- greeting:
+    text_size: 2xl
+    text: Purple4pur's HP - Links in One Page
+- datetime:
+    text_size: 2xl
+    locale: en
+    format:
+      dateStype: long
+      timeStyle: long
+      hour12: true

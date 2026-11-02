@@ -1,0 +1,5 @@
+[credential]
+        helper = /config/git-credential.sh
+
+[safe]
+        directory = /data/repo

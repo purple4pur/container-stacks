@@ -1,0 +1,13 @@
+title: Purple4pur - HomePage
+background: https://static.quitw.org/img/137292910_p0.small.jpg
+cardBlur: xl
+favicon: https://static.quitw.org/img/pfp.small.jpg
+theme: light
+color: slate
+bookmarksStyle: icons
+disableCollapse: false
+useEqualHeights: true
+headerStyle: boxed
+target: _self
+hideVersion: true
+logpath: /app/logs

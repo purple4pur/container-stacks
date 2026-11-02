@@ -1,0 +1,25 @@
+[Unit]
+Description=Traefik reverse proxy
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/library/traefik:v3.6
+AutoUpdate=registry
+ContainerName=traefik
+Network=frontend.network
+PublishPort=443:443
+EnvironmentFile=%h/.config/container_stacks/secrets/traefik.env
+Volume=%h/container_stacks/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+Volume=%h/container_stacks/traefik/config/dynamic.yaml:/etc/traefik/dynamic/dynamic.yaml:ro
+Volume=%h/.local/share/container_stacks/traefik/letsencrypt:/letsencrypt
+PodmanArgs=--memory=300m
+HealthCmd=traefik healthcheck --ping
+HealthInterval=30s
+HealthTimeout=5s
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
