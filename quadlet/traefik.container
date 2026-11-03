@@ -4,7 +4,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Container]
-Image=docker.io/library/traefik:v3.6
+Image=docker.io/library/traefik:v3.7
 AutoUpdate=registry
 ContainerName=traefik
 Network=frontend.network
