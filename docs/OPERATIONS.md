@@ -37,6 +37,14 @@ The timer runs `podman-auto-update.service` daily at 05:00 Asia/Shanghai. A
 pinned tag tracks digest changes on that tag only. A new version still needs a
 manual tag change.
 
+Floating minor tags, such as `traefik:v3.7`, only move while upstream maintains
+that minor line. When a line goes end of life the tag silently freezes, so a
+quiet `podman auto-update --dry-run` for months means it is time to compare
+`quadlet/*.container` against upstream releases and bump the tag.
+
+Traefik tracks the current minor (`v3.7`, latest `v3.7.17`). The 3.6 line
+stopped at `v3.6.25` and receives no more security patches.
+
 ## Create the secret files
 
 Read [Secrets](SECRETS.md) before you start the stack for the first time.
