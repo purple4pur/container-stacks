@@ -1,0 +1,20 @@
+[Unit]
+Description=frp server for the local downloader tunnels
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/fatedier/frps:v0.72.0
+AutoUpdate=registry
+ContainerName=frp_server
+Network=frontend.network
+# Publish the client and SSH ports in a local drop-in. See docs/SECRETS.md.
+Volume=%h/.config/container_stacks/secrets/frps.toml:/etc/frp/frps.toml:ro
+Exec=-c /etc/frp/frps.toml
+PodmanArgs=--memory=128m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

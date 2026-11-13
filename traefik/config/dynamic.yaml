@@ -5,6 +5,10 @@ http:
         excludedContentTypes:
           - "text/event-stream"
 
+    user_auth:
+      basicAuth:
+        usersFile: "/etc/traefik/auth/users"
+
     blog_updater_ratelimit:
       rateLimit:
         average: 3

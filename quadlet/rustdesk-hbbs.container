@@ -1,0 +1,22 @@
+[Unit]
+Description=RustDesk ID server (hbbs)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/rustdesk/rustdesk-server:latest
+AutoUpdate=registry
+ContainerName=hbbs
+Exec=hbbs
+PublishPort=21115:21115
+PublishPort=21116:21116
+PublishPort=21116:21116/udp
+PublishPort=21118:21118
+Volume=%h/.local/share/container_stacks/rustdesk:/root
+PodmanArgs=--memory=64m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

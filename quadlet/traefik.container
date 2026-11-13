@@ -12,6 +12,8 @@ PublishPort=443:443
 EnvironmentFile=%h/.config/container_stacks/secrets/traefik.env
 Volume=%h/container_stacks/traefik/config/traefik.yaml:/etc/traefik/traefik.yaml:ro
 Volume=%h/container_stacks/traefik/config/dynamic.yaml:/etc/traefik/dynamic/dynamic.yaml:ro
+Volume=%h/.config/container_stacks/secrets/traefik-frp.yaml:/etc/traefik/dynamic/frp.yaml:ro
+Volume=%h/.config/container_stacks/secrets/traefik-users:/etc/traefik/auth/users:ro
 Volume=%h/.local/share/container_stacks/traefik/letsencrypt:/letsencrypt
 PodmanArgs=--memory=300m
 HealthCmd=traefik healthcheck --ping

@@ -9,9 +9,9 @@ unit per container from `quadlet/`. Traefik reads routes from
 `traefik/config/dynamic.yaml`. The dashboard and the other services read their
 configuration from the tracked `config/` directories.
 
-The repository never holds live data or credentials. Runtime state lives under
-`~/.local/share/container_stacks/`. Secrets live under
-`~/.config/container_stacks/secrets/` with mode 600.
+The repository never holds live data, credentials, or private port maps.
+Runtime state lives under `~/.local/share/container_stacks/`. Secrets live
+under `~/.config/container_stacks/secrets/` with mode 600.
 
 ## Branch model
 
@@ -30,7 +30,7 @@ when you need the old files.
 | `blog/` | Runlet configuration for the blog pull |
 | `static-updater/` | Runlet configuration for the proxy sync |
 | `sshwifty/` | Web SSH configuration |
-| `scripts/` | Install, verify, tunnel, and hygiene helpers |
+| `scripts/` | Install, verify, and hygiene helpers |
 | `systemd/` | Image update timer |
 | `docs/` | Architecture, operations, and secret documents |
 
@@ -41,7 +41,7 @@ The `main` branch follows three rules:
 1. No v1 files. The old Compose tree stays on `v1-docker`.
 2. No runtime data or generated output. Volumes, logs, databases, and published
    files stay outside the worktree.
-3. No credentials. Only `.env.example` files may be tracked.
+3. No credentials or private port maps. Keep both outside the worktree.
 
 `scripts/check-hygiene.sh` checks these rules. CI runs the check on every push
 and pull request. Gitleaks checks the history for secrets.

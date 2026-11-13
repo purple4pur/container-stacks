@@ -36,7 +36,9 @@ network.
 | `qui` | Torrent web UI | Configuration, logs, and database |
 | `peerbanhelper` | Peer ban manager | Service data |
 | `whoami` | Request echo test | None |
-| `frp-tunnel` | SSH tunnel to remote downloader ports | None |
+| `frps` | frp server for the local downloader tunnels | None |
+| `rustdesk-hbbs` | RustDesk ID server | Server key and peer database |
+| `rustdesk-hbbr` | RustDesk relay server | Server key and peer database |
 
 ## Network and routing
 
@@ -63,7 +65,8 @@ directories.
 Bearer tokens, API tokens, and the GitHub PAT live in
 `~/.config/container_stacks/secrets/` with mode 600. Units read them through
 `EnvironmentFile=` or through a bind-mounted `/run/secrets/` file. The
-repository tracks only `.env.example` templates with placeholders.
+repository tracks only placeholder templates. The frp port list and its
+Traefik routes live there too, in `frps.toml` and `traefik-frp.yaml`.
 
 ## Update flow
 
