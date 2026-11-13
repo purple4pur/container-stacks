@@ -1,8 +1,8 @@
 # Secrets
 
-The stack reads secrets from environment files under
+The stack reads secrets from files under
 `~/.config/container_stacks/secrets/`. The directory has mode 700 and each file
-has mode 600. The repository tracks only the `.env.example` templates.
+has mode 600. The repository tracks no real secret values.
 
 ## Create the directory
 
@@ -11,7 +11,8 @@ has mode 600. The repository tracks only the `.env.example` templates.
 
 ## Create each file
 
-Copy the example, replace every placeholder, and set mode 600.
+For each file with an example, copy it, replace every placeholder, and set
+mode 600.
 
 | File | Example | Purpose |
 |---|---|---|
@@ -20,10 +21,46 @@ Copy the example, replace every placeholder, and set mode 600.
 | `blog-runlet.env` | `blog/runlet.env.example` | Blog updater bearer token |
 | `static-updater-runlet.env` | `static-updater/runlet.env.example` | Static updater bearer token and proxy directory name |
 | `static-updater-git.env` | `static-updater/git.env.example` | Read-only GitHub PAT |
+| `frps.toml` | none | frp server config: the client port and the allowed tunnel ports |
 
 1. Run `cp <example> ~/.config/container_stacks/secrets/<file>`.
 2. Edit the new file and replace every placeholder.
 3. Run `chmod 600 ~/.config/container_stacks/secrets/<file>`.
+
+## Create the frps config
+
+The frp ports stay out of the repository. Create the server config at
+`~/.config/container_stacks/secrets/frps.toml` before the first start:
+
+```toml
+bindPort = <frps-port>
+kcpBindPort = <frps-port>
+
+allowPorts = [
+  { single = <ssh-port> },
+  { single = <qbt-port> },
+  { single = <files-port> },
+]
+```
+
+Add one `single` entry for each forwarded port.
+
+Publish the client and SSH ports through a Quadlet drop-in.
+
+1. Run `install -d -m 700 ~/.config/containers/systemd/frps.container.d`.
+2. Create `~/.config/containers/systemd/frps.container.d/10-ports.conf`.
+3. Add these lines:
+
+   ```ini
+   [Container]
+   PublishPort=<frps-port>:<frps-port>
+   PublishPort=<ssh-port>:<ssh-port>
+   ```
+
+4. Run `chmod 600 ~/.config/containers/systemd/frps.container.d/10-ports.conf`.
+5. Run `systemctl --user daemon-reload`.
+
+The drop-in stays outside the worktree. `scripts/install.sh` does not touch it.
 
 ## Token permissions
 

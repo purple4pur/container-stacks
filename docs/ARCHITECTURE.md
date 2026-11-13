@@ -36,7 +36,7 @@ network.
 | `qui` | Torrent web UI | Configuration, logs, and database |
 | `peerbanhelper` | Peer ban manager | Service data |
 | `whoami` | Request echo test | None |
-| `frp-tunnel` | SSH tunnel to remote downloader ports | None |
+| `frps` | frp server for the local downloader tunnels | None |
 
 ## Network and routing
 

@@ -45,6 +45,16 @@ quiet `podman auto-update --dry-run` for months means it is time to compare
 Traefik tracks the current minor (`v3.7`, latest `v3.7.17`). The 3.6 line
 stopped at `v3.6.25` and receives no more security patches.
 
+## Check the frp server
+
+1. Run `systemctl --user status frps`.
+2. Run `podman logs --tail 50 frp_server`.
+3. Check for the client login and the proxy start lines.
+
+The server reads `~/.config/container_stacks/secrets/frps.toml`. That file holds
+the client port and the allowed tunnel ports. The tunneled services are
+reachable on the `frontend` network at `frp_server`.
+
 ## Create the secret files
 
 Read [Secrets](SECRETS.md) before you start the stack for the first time.
