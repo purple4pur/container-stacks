@@ -37,6 +37,8 @@ network.
 | `peerbanhelper` | Peer ban manager | Service data |
 | `whoami` | Request echo test | None |
 | `frps` | frp server for the local downloader tunnels | None |
+| `rustdesk-hbbs` | RustDesk ID server | Server key and peer database |
+| `rustdesk-hbbr` | RustDesk relay server | Server key and peer database |
 
 ## Network and routing
 

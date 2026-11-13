@@ -55,6 +55,15 @@ The server reads `~/.config/container_stacks/secrets/frps.toml`. That file holds
 the client port and the allowed tunnel ports. The tunneled services are
 reachable on the `frontend` network at `frp_server`.
 
+## Check RustDesk
+
+1. Run `systemctl --user status rustdesk-hbbs rustdesk-hbbr`.
+2. Run `podman logs --tail 50 hbbs`.
+3. Connect a client to `sobad.quitw.org`.
+
+The units share `~/.local/share/container_stacks/rustdesk`. Keep `id_ed25519`
+there. A new key breaks the trust of every existing client.
+
 ## Create the secret files
 
 Read [Secrets](SECRETS.md) before you start the stack for the first time.

@@ -1,0 +1,20 @@
+[Unit]
+Description=RustDesk relay server (hbbr)
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=docker.io/rustdesk/rustdesk-server:latest
+AutoUpdate=registry
+ContainerName=hbbr
+Exec=hbbr
+PublishPort=21117:21117
+PublishPort=21119:21119
+Volume=%h/.local/share/container_stacks/rustdesk:/root
+PodmanArgs=--memory=64m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
