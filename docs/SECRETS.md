@@ -21,11 +21,16 @@ mode 600.
 | `blog-runlet.env` | `blog/runlet.env.example` | Blog updater bearer token |
 | `static-updater-runlet.env` | `static-updater/runlet.env.example` | Static updater bearer token and proxy directory name |
 | `static-updater-git.env` | `static-updater/git.env.example` | Read-only GitHub PAT |
+| `traefik-users` | none | Basic auth users for the `qbt504` route |
 | `frps.toml` | none | frp server config: the client port and the allowed tunnel ports |
+| `traefik-frp.yaml` | none | Traefik routes for the tunneled downloader services |
 
 1. Run `cp <example> ~/.config/container_stacks/secrets/<file>`.
 2. Edit the new file and replace every placeholder.
 3. Run `chmod 600 ~/.config/container_stacks/secrets/<file>`.
+
+Create `traefik-users` from the `USER_HTPASSWD` value on the old Tokyo host.
+The file holds one `user:hash` line. Do not add it to a tracked file.
 
 ## Create the frps config
 
@@ -61,6 +66,44 @@ Publish the client and SSH ports through a Quadlet drop-in.
 5. Run `systemctl --user daemon-reload`.
 
 The drop-in stays outside the worktree. `scripts/install.sh` does not touch it.
+
+## Create the frp route file
+
+Create `~/.config/container_stacks/secrets/traefik-frp.yaml` with the routes
+for the tunneled services:
+
+```yaml
+http:
+  services:
+    qbt_504:
+      loadBalancer:
+        servers:
+          - url: "http://frp_server:<qbt-port>"
+    files_504:
+      loadBalancer:
+        servers:
+          - url: "http://frp_server:<files-port>"
+  routers:
+    qbt_504:
+      rule: "Host(`qbt504.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "qbt_504"
+      middlewares:
+        - "compressor"
+        - "user_auth"
+      tls:
+        certResolver: "cloudflare"
+    files_504:
+      rule: "Host(`files504.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "files_504"
+      middlewares:
+        - "compressor"
+      tls:
+        certResolver: "cloudflare"
+```
 
 ## Token permissions
 
