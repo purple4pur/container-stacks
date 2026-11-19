@@ -7,8 +7,7 @@ The stack runs rootless Podman 5 with Quadlet units. It needs a user session,
 cgroup v2, a subordinate ID range, and permission to bind port 443. Do these
 steps one time for each new host.
 
-The current host runs Debian 13, Podman 5.4, and systemd 257. The units use
-`%h`, so any non-root account works. This host runs the stack as `purple4pur`.
+The units use `%h`, so any non-root account works.
 
 This page targets Debian. On an SELinux host, the bind mounts also need a
 relabel, which the units do not set.
@@ -34,8 +33,6 @@ first, then return here. Compare each output with the expected value.
 
 `overlay` is the fast storage driver. `vfs` also works, but it copies every
 layer and uses much more disk. Every other mismatch stops a unit from starting.
-
-This host passes every check.
 
 ## Install the packages
 
@@ -87,8 +84,7 @@ sudo sysctl --system
 cat /proc/sys/net/ipv4/ip_unprivileged_port_start
 ```
 
-Gate: the output reads `80` or less. This host uses `80`. The stack needs at
-least `443`.
+Gate: the output reads `80` or less. The stack needs at least `443`.
 
 ## Clone the repository
 
