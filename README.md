@@ -48,6 +48,8 @@ and pull request. Gitleaks checks the history for secrets.
 
 ## Documentation
 
+- [Rootless Podman setup](docs/ROOTLESS.md) gives the host precheck and the
+  steps for a new environment.
 - [Architecture](docs/ARCHITECTURE.md) explains the service model and the state
   and secret boundaries.
 - [Operations](docs/OPERATIONS.md) gives the commands to install, run, and

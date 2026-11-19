@@ -5,6 +5,8 @@ command as the `purple4pur` user. The units use rootless Podman.
 
 ## Install the units
 
+Read [Rootless Podman setup](ROOTLESS.md) first on a new host.
+
 1. Run `scripts/install.sh`.
 2. Check that the units exist with `systemctl --user list-units '*.service'`.
 
