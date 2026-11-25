@@ -1,0 +1,27 @@
+[Unit]
+Description=FileBrowser Quantum for torrent downloads
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/gtsteffaniak/filebrowser:latest
+AutoUpdate=registry
+ContainerName=filebrowser
+Network=frontend.network
+UserNS=keep-id:uid=1000,gid=1000
+EnvironmentFile=%h/.config/container_stacks/secrets/filebrowser.env
+Environment=FILEBROWSER_CONFIG=/config/config.yaml
+Volume=%h/container_stacks/filebrowser/config/config.yaml:/config/config.yaml:ro
+Volume=%h/.local/share/container_stacks/filebrowser:/home/filebrowser/data
+Volume=%h/.local/share/container_stacks/qbittorrent/downloads:/downloads
+HealthCmd=curl -fsS -o /dev/null http://localhost:8080/health
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
+PodmanArgs=--memory=1g
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

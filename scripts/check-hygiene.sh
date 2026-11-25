@@ -9,7 +9,7 @@ cd "$(git rev-parse --show-toplevel)"
 allowed='^(README\.md|\.gitignore|\.gitattributes|\.pre-commit-config\.yaml)$'
 allowed+='|^\.github/workflows/[^/]+\.ya?ml$'
 allowed+='|^(quadlet|systemd|scripts|docs)/[^/]+$'
-allowed+='|^(blog|homepage|static-updater|sshwifty|traefik)/config/.+$'
+allowed+='|^(blog|filebrowser|homepage|static-updater|sshwifty|traefik)/config/.+$'
 allowed+='|^(blog|static-updater|traefik)/[^/]*\.env\.example$'
 
 forbidden='(^|/)(legacy|data|logs|html|letsencrypt|backups?)/'

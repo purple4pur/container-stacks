@@ -106,6 +106,7 @@ first start.
 ```bash
 install -d -m 755 \
   ~/.local/share/container_stacks/{blog/data,homepage/logs,peerbanhelper/data,qbittorrent/config,qbittorrent/downloads,qbittorrent/downloads/temp,qui/config,qui/logs,rustdesk,static/html,static/html/dashboard,static-updater/data,traefik/letsencrypt}
+install -d -m 700 ~/.local/share/container_stacks/filebrowser
 ```
 
 The blog updater resets an existing checkout. It does not clone the blog
@@ -122,8 +123,8 @@ with status 0. Without this checkout, `blog-web` and `blog-updater` fail.
 ## Create the secrets
 
 Follow [Secrets](SECRETS.md). Create every file before the first start.
-Traefik mounts three secret files and frps mounts one, so a missing file stops
-those units.
+Traefik mounts three secret files, and frps and filebrowser mount one each, so a
+missing file stops those units.
 
 After you set `STATIC_PROXY_DIR`, create its publish directory:
 
@@ -154,7 +155,7 @@ Start the rest of the stack:
 ```bash
 systemctl --user start homepage static blog-web blog-updater static-updater \
   it-tools cyberchef learnx piano-practice sshwifty qbittorrent qui \
-  peerbanhelper whoami frps rustdesk-hbbs rustdesk-hbbr
+  peerbanhelper filebrowser whoami frps rustdesk-hbbs rustdesk-hbbr
 ```
 
 Gate: `systemctl --user is-active traefik.service` prints `active`.

@@ -24,6 +24,10 @@
       icon: qbittorrent
       href: https://qbt504.quitw.org/
       description: Torrent Client
+  - Files (Downloads):
+      icon: filebrowser-quantum
+      href: https://files.quitw.org/
+      description: Browse downloads or mount over WebDAV
 - Cool Online Tools (Self-Hosted):
   - Piano Practice:
       icon: https://piano.quitw.org/favicon.svg

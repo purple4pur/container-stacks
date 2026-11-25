@@ -18,6 +18,7 @@ if [ "${#hosts[@]}" -eq 0 ]; then
         shell.quitw.org
         qui.quitw.org
         pbh.quitw.org
+        files.quitw.org
         whoami.quitw.org
         qbt504.quitw.org
         files504.quitw.org

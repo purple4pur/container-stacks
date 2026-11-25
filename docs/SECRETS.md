@@ -23,6 +23,7 @@ mode 600.
 | `static-updater-git.env` | `static-updater/git.env.example` | Read-only GitHub PAT |
 | `traefik-users` | none | Basic auth users for the `qbt504` route |
 | `qbittorrent-webui.env` | none | Local record of the dedicated qBittorrent WebUI credentials |
+| `filebrowser.env` | none | FileBrowser JWT signing secret and admin password |
 | `frps.toml` | none | frp server config: the client port and the allowed tunnel ports |
 | `traefik-frp.yaml` | none | Traefik routes for the tunneled downloader services |
 
@@ -33,6 +34,14 @@ mode 600.
 The qBittorrent WebUI password is stored as a hash in its state directory.
 `qbittorrent-webui.env` is an optional plaintext record for entering the same
 credentials in `qui` and `peerbanhelper`. No unit mounts it.
+
+Create `filebrowser.env` with a JWT signing secret and an admin password:
+
+1. Run `printf 'FILEBROWSER_JWT_TOKEN_SECRET=%s\nFILEBROWSER_ADMIN_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 16)" > ~/.config/container_stacks/secrets/filebrowser.env`.
+2. Run `chmod 600 ~/.config/container_stacks/secrets/filebrowser.env`.
+
+The unit reapplies the admin password on every restart, so treat this file as
+the source of truth and do not change the password in the Web UI.
 
 Create `traefik-users` from the `USER_HTPASSWD` value on the old Tokyo host.
 The file holds one `user:hash` line. Do not add it to a tracked file.

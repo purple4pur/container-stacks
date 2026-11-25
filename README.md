@@ -27,6 +27,7 @@ when you need the old files.
 | `quadlet/` | One systemd unit per container |
 | `traefik/` | Static configuration and dynamic routes |
 | `homepage/` | Dashboard configuration |
+| `filebrowser/` | FileBrowser configuration |
 | `blog/` | Runlet configuration for the blog pull |
 | `static-updater/` | Runlet configuration for the proxy sync |
 | `sshwifty/` | Web SSH configuration |

@@ -124,6 +124,42 @@ Store the credentials outside the worktree, for example in
 `~/.config/container_stacks/secrets/qbittorrent-webui.env` with mode 600. Do not
 commit them.
 
+## Check FileBrowser
+
+1. Run `systemctl --user status filebrowser`.
+2. Run `podman logs --tail 50 filebrowser`.
+3. Open `https://files.quitw.org/`.
+
+The admin password is `FILEBROWSER_ADMIN_PASSWORD` in `filebrowser.env`:
+
+```bash
+grep '^FILEBROWSER_ADMIN_PASSWORD=' ~/.config/container_stacks/secrets/filebrowser.env
+```
+
+Sign in as `admin`. The unit reapplies this value on every restart, so change it
+in the secret file, not in the Web UI. The unit mounts
+`~/.local/share/container_stacks/qbittorrent/downloads` read-write at
+`/downloads`, so uploads land where qBittorrent can seed them. The database and
+cache live under `~/.local/share/container_stacks/filebrowser/`.
+
+The `files.quitw.org` record is **DNS only** (grey cloud). A proxied record caps
+every upload at the Cloudflare request body limit, 100 MB on Free and Pro.
+
+FileBrowser trusts forwarded scheme and host headers, but not client IPs. Login
+rate limiting and the activity log therefore see the Traefik container address.
+That is acceptable for a single-admin instance.
+
+### Mount FileBrowser over WebDAV
+
+1. In the Web UI, open **Settings → API Tokens** and create a token without
+   customization. Copy the full value.
+2. Use `https://files.quitw.org/dav/downloads/` as the server URL.
+3. Use any username. The password is the API token.
+
+WebDAV requires the `api` permission, which the admin user has by default.
+Read-only clients need view and download; write clients also need create,
+modify, and delete.
+
 ## Check RustDesk
 
 1. Run `systemctl --user status rustdesk-hbbs rustdesk-hbbr`.

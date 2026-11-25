@@ -37,6 +37,7 @@ that network is not routed by Traefik.
 | `qbittorrent` | Torrent client with an internal WebUI | Configuration and downloads |
 | `qui` | Torrent web UI | Configuration, logs, and database |
 | `peerbanhelper` | Peer ban manager | Service data |
+| `filebrowser` | Download browser and WebDAV | Configuration, database, and cache |
 | `whoami` | Request echo test | None |
 | `frps` | frp server for the local downloader tunnels | None |
 | `rustdesk-hbbs` | RustDesk ID server | Server key and peer database |
@@ -55,6 +56,10 @@ a local drop-in outside the worktree. Both bridge networks set
 `isolate=true`, so only containers attached to both networks can cross between
 them. `qui` and `peerbanhelper` are the only such containers.
 
+`filebrowser` mounts the qBittorrent downloads read-write and serves WebDAV at
+`https://files.quitw.org/dav/downloads/`. The public name is a DNS-only record at
+Cloudflare, so uploads are not capped by the proxied request body limit.
+
 TLS certificates use the Cloudflare DNS-01 challenge. Traefik stores ACME state
 in the runtime state directory, not in the repository.
 
@@ -70,8 +75,9 @@ state. Units mount all mutable data from outside the worktree:
 Databases, logs, cloned repositories, published files, and ACME state live
 there. The qBittorrent configuration and downloads live under
 `~/.local/share/container_stacks/qbittorrent/`; the WebUI password is stored
-there as a hash. `scripts/check-hygiene.sh` rejects tracked paths that look like
-state directories.
+there as a hash. The FileBrowser database and cache live under
+`~/.local/share/container_stacks/filebrowser/`. `scripts/check-hygiene.sh`
+rejects tracked paths that look like state directories.
 
 Bearer tokens, API tokens, and the GitHub PAT live in
 `~/.config/container_stacks/secrets/` with mode 600. Units read them through
