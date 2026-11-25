@@ -22,12 +22,17 @@ mode 600.
 | `static-updater-runlet.env` | `static-updater/runlet.env.example` | Static updater bearer token and proxy directory name |
 | `static-updater-git.env` | `static-updater/git.env.example` | Read-only GitHub PAT |
 | `traefik-users` | none | Basic auth users for the `qbt504` route |
+| `qbittorrent-webui.env` | none | Local record of the dedicated qBittorrent WebUI credentials |
 | `frps.toml` | none | frp server config: the client port and the allowed tunnel ports |
 | `traefik-frp.yaml` | none | Traefik routes for the tunneled downloader services |
 
 1. Run `cp <example> ~/.config/container_stacks/secrets/<file>`.
 2. Edit the new file and replace every placeholder.
 3. Run `chmod 600 ~/.config/container_stacks/secrets/<file>`.
+
+The qBittorrent WebUI password is stored as a hash in its state directory.
+`qbittorrent-webui.env` is an optional plaintext record for entering the same
+credentials in `qui` and `peerbanhelper`. No unit mounts it.
 
 Create `traefik-users` from the `USER_HTPASSWD` value on the old Tokyo host.
 The file holds one `user:hash` line. Do not add it to a tracked file.

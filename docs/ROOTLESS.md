@@ -105,7 +105,7 @@ first start.
 
 ```bash
 install -d -m 755 \
-  ~/.local/share/container_stacks/{blog/data,homepage/logs,peerbanhelper/data,qui/config,qui/logs,rustdesk,static/html,static/html/dashboard,static-updater/data,traefik/letsencrypt}
+  ~/.local/share/container_stacks/{blog/data,homepage/logs,peerbanhelper/data,qbittorrent/config,qbittorrent/downloads,qbittorrent/downloads/temp,qui/config,qui/logs,rustdesk,static/html,static/html/dashboard,static-updater/data,traefik/letsencrypt}
 ```
 
 The blog updater resets an existing checkout. It does not clone the blog
@@ -153,8 +153,8 @@ Start the rest of the stack:
 
 ```bash
 systemctl --user start homepage static blog-web blog-updater static-updater \
-  it-tools cyberchef learnx piano-practice sshwifty qui peerbanhelper \
-  whoami frps rustdesk-hbbs rustdesk-hbbr
+  it-tools cyberchef learnx piano-practice sshwifty qbittorrent qui \
+  peerbanhelper whoami frps rustdesk-hbbs rustdesk-hbbr
 ```
 
 Gate: `systemctl --user is-active traefik.service` prints `active`.
@@ -175,14 +175,17 @@ The host firewall and the cloud security group must allow inbound traffic on:
 - TCP 443 for Traefik.
 - TCP 21115 through 21119 and UDP 21116 for RustDesk.
 - The frp client and SSH ports in `~/.config/containers/systemd/frps.container.d/10-ports.conf`.
+- TCP and UDP for the qBittorrent torrent port. The listen port is
+  `QBT_TORRENTING_PORT` in `quadlet/qbittorrent.container`; the host mapping is
+  in `~/.config/containers/systemd/qbittorrent.container.d/10-ports.conf`.
 
 Also point the `quitw.org` DNS records at the host. Allow outbound HTTPS and DNS
 so Traefik can solve the Cloudflare DNS-01 challenge.
 
 Gate: `ss -lntu` shows the listeners after the units start.
 
-Do not open the container ports that only Traefik uses. Those ports stay on the
-`frontend` network.
+Do not open the container ports that only Traefik uses or the qBittorrent WebUI
+port. Those ports stay on the container networks.
 
 ## Verify the result
 

@@ -1,2 +1,3 @@
 [Network]
 NetworkName=frontend
+Options=isolate=true
