@@ -1,0 +1,3 @@
+[Network]
+NetworkName=torrent
+Options=isolate=true

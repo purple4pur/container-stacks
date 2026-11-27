@@ -1,0 +1,32 @@
+[Unit]
+Description=qBittorrent-nox torrent client
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+Image=ghcr.io/qbittorrent/docker-qbittorrent-nox:latest
+AutoUpdate=registry
+ContainerName=qbittorrent
+HostName=qbittorrent
+Network=torrent.network
+UserNS=keep-id:uid=1003,gid=1003
+Environment=PUID=1003
+Environment=PGID=1003
+Environment=QBT_LEGAL_NOTICE=confirm
+Environment=QBT_WEBUI_PORT=8080
+Environment=QBT_TORRENTING_PORT=16881
+# Publish the torrent port in a local drop-in. See docs/OPERATIONS.md.
+Volume=%h/.local/share/container_stacks/qbittorrent/config:/config
+Volume=%h/.local/share/container_stacks/qbittorrent/downloads:/downloads
+StopTimeout=1800
+PodmanArgs=--memory=1g
+HealthCmd=curl -fsS -o /dev/null http://localhost:8080/
+HealthInterval=30s
+HealthTimeout=5s
+HealthRetries=3
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

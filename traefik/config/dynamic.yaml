@@ -93,6 +93,11 @@ http:
         servers:
           - url: "http://peerbanhelper:9898"
 
+    filebrowser:
+      loadBalancer:
+        servers:
+          - url: "http://filebrowser:8080"
+
   routers:
     whoami:
       rule: "Host(`whoami.quitw.org`)"
@@ -233,5 +238,14 @@ http:
       service: "peerbanhelper"
       middlewares:
         - "compressor"
+      tls:
+        certResolver: "cloudflare"
+
+    # No compressor middleware: gzip breaks some WebDAV and range requests.
+    filebrowser:
+      rule: "Host(`files.quitw.org`)"
+      entryPoints:
+        - "websecure"
+      service: "filebrowser"
       tls:
         certResolver: "cloudflare"

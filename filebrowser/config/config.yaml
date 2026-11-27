@@ -1,0 +1,24 @@
+http:
+  port: 8080
+  externalUrl: "https://files.quitw.org"
+  trustProxyHeaders: true
+  disableWebDAV: false
+
+auth:
+  methods:
+    password:
+      adminUsername: "admin"
+
+server:
+  cacheDir: "/home/filebrowser/data/tmp"
+  disableUpdateCheck: true
+  database:
+    path: "/home/filebrowser/data/database.sqlite"
+  sources:
+    - path: "/downloads"
+      name: "downloads"
+      config:
+        defaultEnabled: true
+        rules:
+          # qBittorrent keeps incomplete files here.
+          - folderPath: "temp"

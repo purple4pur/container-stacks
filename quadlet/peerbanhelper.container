@@ -9,6 +9,7 @@ AutoUpdate=registry
 ContainerName=peerbanhelper
 HostName=peerbanhelper
 Network=frontend.network
+Network=torrent.network
 User=1003
 UserNS=keep-id:uid=1003,gid=1003
 Volume=%h/.local/share/container_stacks/peerbanhelper/data:/app/data
